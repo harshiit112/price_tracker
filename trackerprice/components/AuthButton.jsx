@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AuthModal from "./AuthModel";
+import AuthModal from "./AuthModal";
 import { Button } from "@/components/ui/button";
 import { LogIn, LogOut } from "lucide-react";
 import { SignOut } from "@/app/actions";
