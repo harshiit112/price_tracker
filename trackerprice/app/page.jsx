@@ -3,6 +3,8 @@ import AuthButton from "@/components/AuthButton";
 import { createClient } from "@/utils/supabase/server";
 import { Bell, Rabbit, Shield, TrendingDown } from "lucide-react";
 import Image from "next/image";
+import { getProducts } from "./actions";
+import ProductCard from "@/components/ProductCard";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -11,7 +13,7 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const products = [];
+  const products = user ? await getProducts() : [];
 
   const FEATURES = [
     {
@@ -48,7 +50,7 @@ export default async function Home() {
           </div>
 
           {/*Auth button */}
-          <AuthButton user={user}/>
+          <AuthButton user={user} />
         </div>
       </header>
 
@@ -68,7 +70,7 @@ export default async function Home() {
           </p>
 
           {/* Add product */}
-          <AddProductForm user={user}/>
+          <AddProductForm user={user} />
 
           {/* Features */}
 
@@ -90,6 +92,26 @@ export default async function Home() {
           )}
         </div>
       </section>
+
+      {user && products.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 pb-20">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">
+              Your Tracker Products
+            </h3>
+
+            <span className="text-sm text-gray-500">
+              {products.length} {products.length === 1 ? "product" : "products"}
+            </span>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 items-start">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Empty State */}
       {user && products.length === 0 && (
