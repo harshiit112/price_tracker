@@ -1,3 +1,4 @@
+import { sendPriceDropAlert } from "@/lib/email";
 import { scrapeProduct } from "@/lib/firecrawl";
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
@@ -76,6 +77,16 @@ export async function POST(request) {
             } = await supabase.auth.admin.getUserById(product.user_id);
 
             if (user?.email) {
+              const emailResult = await sendPriceDropAlert(
+                user.email,
+                product,
+                oldPrice,
+                newPrice,
+              );
+
+              if (emailResult.success) {
+                results.alertsSent++;
+              }
             }
           }
         }
